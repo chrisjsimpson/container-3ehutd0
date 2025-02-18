@@ -89,7 +89,7 @@
                 console.log("hello");
                 const min = Number(elm.target.parentElement.parentElement.children[0].textContent);
                 const max = Number(elm.target.parentElement.parentElement.children[1].textContent);
-                const price = Number(elm.target.parentElement.parentElement.children[2].textContent.split("$")[1]);
+                const price = Number(elm.target.parentElement.parentElement.children[2].textContent.split("£")[1]);
                 this.removePricingTier(min, max, price);
                 });
             });
