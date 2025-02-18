@@ -30,29 +30,36 @@
             this.render();
         }
 
+        removePricingTier(min, max, price) {
+            this.pricing = this.pricing.filter(item => JSON.stringify(item) != JSON.stringify(
+                {min: min, max: max, price: price})
+            );
+            this.render();
+        }
+
         render() {
             this.shadowRoot.innerHTML = `
                 <style>
-                    .card { padding: 16px; max-width: 400px; margin: auto; border: 1px solid #ccc; border-radius: 8px; }
+                    .card { padding: 16px; max-width: 400px; margin: auto; border: 1px solid #ccc; border-radius: 8px; font-family: sans-serif;}
                     .input { margin: 8px 0; padding: 8px; width: 100%; }
                     .button { padding: 8px 16px; background-color: #007bff; color: white; border: none; cursor: pointer; }
                     .table { width: 100%; border-collapse: collapse; margin-top: 16px; }
                     .table th, .table td { border: 1px solid #ccc; padding: 8px; text-align: left; }
                 </style>
                 <div class="card">
-                    <h2>Tour Pricing Calculator</h2>
+                    <h2>Admin Tour Price Setter</h2>
                     <label>Number of People:</label>
                     <input type="number" class="input" id="groupSize" value="${this.groupSize}" />
-                    <p>Price per Person: $${this.getPrice(this.groupSize)}</p>
+                    <p>Price per Person: &pound;${this.getPrice(this.groupSize)}</p>
                     
                     <h3>Admin: Define Pricing Tiers</h3>
                     <table class="table">
                         <thead>
-                            <tr><th>Min</th><th>Max</th><th>Price</th></tr>
+                          <tr><th>Min</th><th>Max</th><th>Price</th><th>Remove</th></tr>
                         </thead>
                         <tbody>
                             ${this.pricing.map(({ min, max, price }) => `
-                                <tr><td>${min}</td><td>${max}</td><td>$${price}</td></tr>
+                            <tr><td>${min}</td><td>${max}</td><td>&pound;${price}</td><td><button class="button removeTier">Remove</button></td></tr>
                             `).join('')}
                         </tbody>
                     </table>
@@ -76,6 +83,15 @@
                 const max = Number(this.shadowRoot.getElementById("newMax").value);
                 const price = Number(this.shadowRoot.getElementById("newPrice").value);
                 this.addPricingTier(min, max, price);
+            });
+            this.shadowRoot.querySelectorAll(".removeTier").forEach((elm) => { 
+                elm.addEventListener("click", (elm) => {
+                console.log("hello");
+                const min = Number(elm.target.parentElement.parentElement.children[0].textContent);
+                const max = Number(elm.target.parentElement.parentElement.children[1].textContent);
+                const price = Number(elm.target.parentElement.parentElement.children[2].textContent.split("$")[1]);
+                this.removePricingTier(min, max, price);
+                });
             });
         }
     }
