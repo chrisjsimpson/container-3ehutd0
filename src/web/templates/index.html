@@ -1,10 +1,87 @@
-{% extends 'base.html' %}
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaling Pricing Tool</title>
+</head>
+<body>
+    <scaling-pricing-tool></scaling-pricing-tool><script>
+    class ScalingPricingTool extends HTMLElement {
+        constructor() {
+            super();
+            this.attachShadow({ mode: "open" });
+            this.groupSize = 1;
+            this.pricing = [
+                { min: 1, max: 1, price: 200 },
+                { min: 2, max: 4, price: 150 },
+                { min: 5, max: 10, price: 120 },
+                { min: 11, max: 20, price: 100 },
+            ];
+            this.render();
+        }
 
+        getPrice(size) {
+            const tier = this.pricing.find(({ min, max }) => size >= min && size <= max);
+            return tier ? tier.price : "N/A";
+        }
 
-{% block header %}
-    Header
-{% endblock header %}
+        addPricingTier(min, max, price) {
+            this.pricing.push({ min, max, price });
+            this.render();
+        }
 
-{% block content %}
-    Content
-{% endblock %}
+        render() {
+            this.shadowRoot.innerHTML = `
+                <style>
+                    .card { padding: 16px; max-width: 400px; margin: auto; border: 1px solid #ccc; border-radius: 8px; }
+                    .input { margin: 8px 0; padding: 8px; width: 100%; }
+                    .button { padding: 8px 16px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+                    .table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+                    .table th, .table td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+                </style>
+                <div class="card">
+                    <h2>Tour Pricing Calculator</h2>
+                    <label>Number of People:</label>
+                    <input type="number" class="input" id="groupSize" value="${this.groupSize}" />
+                    <p>Price per Person: $${this.getPrice(this.groupSize)}</p>
+                    
+                    <h3>Admin: Define Pricing Tiers</h3>
+                    <table class="table">
+                        <thead>
+                            <tr><th>Min</th><th>Max</th><th>Price</th></tr>
+                        </thead>
+                        <tbody>
+                            ${this.pricing.map(({ min, max, price }) => `
+                                <tr><td>${min}</td><td>${max}</td><td>$${price}</td></tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    
+                    <div>
+                        <input type="number" class="input" id="newMin" placeholder="Min" />
+                        <input type="number" class="input" id="newMax" placeholder="Max" />
+                        <input type="number" class="input" id="newPrice" placeholder="Price" />
+                        <button class="button" id="addTier">Add</button>
+                    </div>
+                </div>
+            `;
+
+            this.shadowRoot.getElementById("groupSize").addEventListener("input", (e) => {
+                this.groupSize = Number(e.target.value);
+                this.render();
+            });
+
+            this.shadowRoot.getElementById("addTier").addEventListener("click", () => {
+                const min = Number(this.shadowRoot.getElementById("newMin").value);
+                const max = Number(this.shadowRoot.getElementById("newMax").value);
+                const price = Number(this.shadowRoot.getElementById("newPrice").value);
+                this.addPricingTier(min, max, price);
+            });
+        }
+    }
+
+    customElements.define("scaling-pricing-tool", ScalingPricingTool);
+</script>
+
+</body>
+</html>
