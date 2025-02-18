@@ -1,3 +1,15 @@
+# v0.0.4 (Tue Feb 18 2025)
+
+#### ⚠️ Pushed to `main`
+
+- Update index.html ([@chrisjsimpson](https://github.com/chrisjsimpson))
+
+#### Authors: 1
+
+- [@chrisjsimpson](https://github.com/chrisjsimpson)
+
+---
+
 # v0.0.3 (Tue Feb 18 2025)
 
 #### ⚠️ Pushed to `main`
